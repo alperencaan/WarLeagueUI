@@ -5,107 +5,68 @@ using System.Collections.Generic;
 
 public class ArmyBuilderManager : MonoBehaviour
 {
-    [Header("UI Elements")]
-    [SerializeField] private Transform unitContainer; // Birim kartlarının yerleştirileceği container
-    [SerializeField] private Button backButton;
-    [SerializeField] private Button saveArmyButton;
-    [SerializeField] private TMP_Text goldText;
-    [SerializeField] private TMP_Text armyPointsText;
-
-    [Header("Unit Selection")]
-    [SerializeField] private int maxArmyPoints = 1000;
-    [SerializeField] private int startingGold = 5000;
-
-    private int currentGold;
-    private int currentArmyPoints;
-    private List<UnitData> selectedUnits = new List<UnitData>();
+    [Header("UI References")]
+    [SerializeField] private Transform cardContainer;
+    [SerializeField] private GameObject characterCardPrefab;
+    [SerializeField] private TMP_Text selectionText;
+    
+    [Header("Characters")]
+    [SerializeField] private List<CharacterData> availableCharacters;
+    
+    private List<CharacterData> selectedCharacters = new List<CharacterData>();
+    private const int MAX_SELECTED_CHARACTERS = 3;
 
     private void Start()
     {
-        InitializeArmyBuilder();
-        SetupListeners();
+        InitializeCharacterCards();
     }
 
-    private void InitializeArmyBuilder()
+    private void InitializeCharacterCards()
     {
-        currentGold = startingGold;
-        currentArmyPoints = 0;
-        UpdateUI();
-        LoadAvailableUnits();
-    }
-
-    private void SetupListeners()
-    {
-        backButton.onClick.AddListener(OnBackClicked);
-        saveArmyButton.onClick.AddListener(OnSaveArmyClicked);
-    }
-
-    private void LoadAvailableUnits()
-    {
-        // TODO: Mevcut birimleri yükle ve UI'da göster
-        // Her birim için UnitCard oluştur
-    }
-
-    public void OnUnitSelected(UnitData unit)
-    {
-        if (CanAddUnit(unit))
+        foreach (var characterData in availableCharacters)
         {
-            selectedUnits.Add(unit);
-            currentGold -= unit.cost;
-            currentArmyPoints += unit.points;
-            UpdateUI();
-        }
-        else
-        {
-            ShowWarning("Yetersiz altın veya ordu puanı!");
+            GameObject cardObj = Instantiate(characterCardPrefab, cardContainer);
+            CharacterCard card = cardObj.GetComponent<CharacterCard>();
+            card.Initialize(characterData, this);
         }
     }
 
-    public void OnUnitRemoved(UnitData unit)
+    public bool SelectCharacter(CharacterData character)
     {
-        if (selectedUnits.Remove(unit))
+        if (selectedCharacters.Count >= MAX_SELECTED_CHARACTERS)
         {
-            currentGold += unit.cost;
-            currentArmyPoints -= unit.points;
-            UpdateUI();
+            ShowWarning("Maksimum savaşçı sayısına ulaştınız!");
+            return false;
+        }
+
+        selectedCharacters.Add(character);
+        ShowSelectionMessage($"{character.characterName} SEÇİLDİ!");
+        return true;
+    }
+
+    public void DeselectCharacter(CharacterData character)
+    {
+        if (selectedCharacters.Remove(character))
+        {
+            ShowSelectionMessage($"{character.characterName} SEÇİMİ KALDIRILDI!");
         }
     }
 
-    private bool CanAddUnit(UnitData unit)
+    private void ShowSelectionMessage(string message)
     {
-        return currentGold >= unit.cost && 
-               (currentArmyPoints + unit.points) <= maxArmyPoints;
-    }
-
-    private void UpdateUI()
-    {
-        goldText.text = $"Altın: {currentGold}";
-        armyPointsText.text = $"Ordu Puanı: {currentArmyPoints}/{maxArmyPoints}";
-    }
-
-    private void OnBackClicked()
-    {
-        // Ana menüye dön
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
-    }
-
-    private void OnSaveArmyClicked()
-    {
-        if (selectedUnits.Count > 0)
+        if (selectionText != null)
         {
-            SaveArmy();
-            ShowMessage("Ordu başarıyla kaydedildi!");
-        }
-        else
-        {
-            ShowWarning("Kaydetmek için en az bir birim seçmelisiniz!");
+            selectionText.text = message;
+            Invoke("ClearSelectionMessage", 2f);
         }
     }
 
-    private void SaveArmy()
+    private void ClearSelectionMessage()
     {
-        // TODO: Seçilen orduyu kaydet
-        // PlayerPrefs veya başka bir kayıt sistemi kullanılabilir
+        if (selectionText != null)
+        {
+            selectionText.text = "";
+        }
     }
 
     private void ShowWarning(string message)
@@ -114,19 +75,16 @@ public class ArmyBuilderManager : MonoBehaviour
         // TODO: UI'da uyarı göster
     }
 
-    private void ShowMessage(string message)
+    public void SaveSelectedCharacters()
     {
-        Debug.Log(message);
-        // TODO: UI'da mesaj göster
+        if (selectedCharacters.Count > 0)
+        {
+            // TODO: Seçili karakterleri kaydet
+            Debug.Log($"Seçilen karakterler kaydedildi: {selectedCharacters.Count} karakter");
+        }
+        else
+        {
+            ShowWarning("Lütfen en az bir savaşçı seçin!");
+        }
     }
-}
-
-[System.Serializable]
-public class UnitData
-{
-    public string unitName;
-    public int cost;
-    public int points;
-    public Sprite icon;
-    // Diğer birim özellikleri eklenebilir
 } 
