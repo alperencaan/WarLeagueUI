@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class CharacterCard : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class CharacterCard : MonoBehaviour
     public TextMeshProUGUI buttonText;
     
     private bool isSelected = false;
+    public event Action<CharacterCard, bool> OnSelectionChanged;
 
     void Start()
     {
@@ -23,7 +25,14 @@ public class CharacterCard : MonoBehaviour
     {
         if (buttonText == null) return;
         
-        isSelected = !isSelected;
+        SetSelected(!isSelected);
+    }
+
+    public void SetSelected(bool selected)
+    {
+        if (isSelected == selected) return;
+        
+        isSelected = selected;
         buttonText.text = isSelected ? "SEÇİLDİ" : "SEÇ";
         
         if (selectButton != null)
@@ -31,6 +40,7 @@ public class CharacterCard : MonoBehaviour
             selectButton.image.color = isSelected ? new Color(1f, 0.7f, 0f) : new Color(1f, 0.5f, 0f);
         }
         
+        OnSelectionChanged?.Invoke(this, isSelected);
         Debug.Log($"{nameText.text} {(isSelected ? "seçildi!" : "seçimi kaldırıldı!")}");
     }
 
@@ -38,5 +48,10 @@ public class CharacterCard : MonoBehaviour
     {
         if (nameText != null) nameText.text = name;
         if (characterImage != null) characterImage.sprite = icon;
+    }
+
+    public bool IsSelected()
+    {
+        return isSelected;
     }
 } 
