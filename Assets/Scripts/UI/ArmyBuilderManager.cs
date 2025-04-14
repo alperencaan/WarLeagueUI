@@ -60,8 +60,9 @@ public class ArmyBuilderManager : MonoBehaviour
         {
             if (selectedCard != null)
             {
-                selectionText.text = $"{selectedCard.nameText.text} SELECTED!";
-                selectionText.color = Color.green;
+                string characterName = selectedCard.nameText.text;
+                selectionText.text = $"{characterName} SELECTED!";
+                selectionText.color = characterName == "CYGO" ? new Color(1f, 0.5f, 0f) : Color.green;
             }
             else
             {

@@ -19,9 +19,16 @@ public class CharacterCard : MonoBehaviour
         if (selectButton != null)
         {
             selectButton.onClick.AddListener(OnSelectButton);
+            buttonText.text = "SELECT";
+            buttonText.fontSize = 28;
+            buttonText.fontStyle = FontStyles.Bold;
+        }
+
+        if (nameText != null && string.IsNullOrEmpty(nameText.text))
+        {
+            nameText.text = "CYGO";
         }
         
-        // Initialize as not selected
         UpdateVisuals(false);
     }
 
@@ -38,7 +45,6 @@ public class CharacterCard : MonoBehaviour
         UpdateVisuals(selected);
         
         OnSelectionChanged?.Invoke(this, isSelected);
-        Debug.Log($"{nameText.text} {(isSelected ? "selected!" : "deselected!")}");
     }
 
     private void UpdateVisuals(bool selected)
@@ -46,11 +52,21 @@ public class CharacterCard : MonoBehaviour
         if (buttonText != null)
         {
             buttonText.text = selected ? "SELECTED" : "SELECT";
+            buttonText.fontSize = selected ? 32 : 28;
+            buttonText.fontStyle = FontStyles.Bold;
+            
+            // Seçili durumda daha parlak turuncu, normal durumda beyaz
+            Color selectedColor = new Color(1f, 0.6f, 0f, 1f);
+            Color normalColor = new Color(1f, 1f, 1f, 0.9f);
+            buttonText.color = selected ? selectedColor : normalColor;
         }
         
         if (selectButton != null)
         {
-            selectButton.image.color = selected ? new Color(1f, 0.7f, 0f) : new Color(1f, 0.5f, 0f);
+            // Buton arka planı için daha koyu renkler
+            Color selectedBgColor = new Color(0.8f, 0.4f, 0f, 1f);
+            Color normalBgColor = new Color(0.6f, 0.3f, 0f, 1f);
+            selectButton.image.color = selected ? selectedBgColor : normalBgColor;
         }
 
         if (cardBorder != null)
