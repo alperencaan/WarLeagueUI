@@ -1661,7 +1661,7 @@ GameObject:
   - component: {fileID: 247513175}
   - component: {fileID: 247513174}
   m_Layer: 5
-  m_Name: soundtext
+  m_Name: SoundText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2720,7 +2720,7 @@ GameObject:
   - component: {fileID: 536474036}
   - component: {fileID: 536474035}
   m_Layer: 5
-  m_Name: brightnesstext
+  m_Name: BrightnessText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3227,7 +3227,7 @@ GameObject:
   - component: {fileID: 632869087}
   - component: {fileID: 632869086}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: LogInCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5262,7 +5262,7 @@ GameObject:
   - component: {fileID: 937323311}
   - component: {fileID: 937323312}
   m_Layer: 5
-  m_Name: brightnesSlider
+  m_Name: BrightnesSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6342,7 +6342,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1252627597
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11087,6 +11087,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 986750154}
     m_Modifications:
+    - target: {fileID: 524593664700836497, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
+      propertyPath: m_Name
+      value: DetailsBtn
+      objectReference: {fileID: 0}
     - target: {fileID: 758020445579760706, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 31
@@ -11114,6 +11118,10 @@ PrefabInstance:
     - target: {fileID: 1700971100858377244, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2144099611986155401, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
+      propertyPath: m_Name
+      value: CygoPhoto
       objectReference: {fileID: 0}
     - target: {fileID: 2318468673632142337, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
       propertyPath: m_Name
@@ -11207,6 +11215,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 22
       objectReference: {fileID: 0}
+    - target: {fileID: 7510182834728249210, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
+      propertyPath: m_Name
+      value: SelectBtn
+      objectReference: {fileID: 0}
+    - target: {fileID: 7752986223881820627, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
+      propertyPath: m_Name
+      value: NameText
+      objectReference: {fileID: 0}
     - target: {fileID: 8803264275473014896, guid: 6ed2ab0e0ea8af247b7edd2192997caa, type: 3}
       propertyPath: m_SizeDelta.x
       value: 250
@@ -11251,9 +11267,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 986750154}
     m_Modifications:
+    - target: {fileID: 441378936760283718, guid: aab85989a571b204188eb2eb8d3438fb, type: 3}
+      propertyPath: m_Name
+      value: NameText
+      objectReference: {fileID: 0}
     - target: {fileID: 623504463868957822, guid: aab85989a571b204188eb2eb8d3438fb, type: 3}
       propertyPath: m_Name
-      value: BigBoss
+      value: BigBossPhoto
+      objectReference: {fileID: 0}
+    - target: {fileID: 674279090183232501, guid: aab85989a571b204188eb2eb8d3438fb, type: 3}
+      propertyPath: m_Name
+      value: DetailsBtn
       objectReference: {fileID: 0}
     - target: {fileID: 779222819325838160, guid: aab85989a571b204188eb2eb8d3438fb, type: 3}
       propertyPath: m_SizeDelta.x
@@ -11286,6 +11310,10 @@ PrefabInstance:
     - target: {fileID: 2510164551298027458, guid: aab85989a571b204188eb2eb8d3438fb, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3127858871307589785, guid: aab85989a571b204188eb2eb8d3438fb, type: 3}
+      propertyPath: m_Name
+      value: SelectBtn
       objectReference: {fileID: 0}
     - target: {fileID: 8349296899989808031, guid: aab85989a571b204188eb2eb8d3438fb, type: 3}
       propertyPath: m_Pivot.x
@@ -11398,6 +11426,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 986750154}
     m_Modifications:
+    - target: {fileID: 200080771360621995, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
+      propertyPath: m_Name
+      value: DetailsBtn
+      objectReference: {fileID: 0}
     - target: {fileID: 1747483059747003561, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
       propertyPath: m_Color.a
       value: 1
@@ -11516,6 +11548,10 @@ PrefabInstance:
 
 '
       objectReference: {fileID: 0}
+    - target: {fileID: 6111930936091998743, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
+      propertyPath: m_Name
+      value: NameText
+      objectReference: {fileID: 0}
     - target: {fileID: 6320822769818357000, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
       propertyPath: m_SizeDelta.x
       value: 180
@@ -11528,6 +11564,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -338
       objectReference: {fileID: 0}
+    - target: {fileID: 7242395527875476686, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
+      propertyPath: m_Name
+      value: SelectBtn
+      objectReference: {fileID: 0}
     - target: {fileID: 7481724526216358343, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
       propertyPath: m_Name
       value: CharacterCardMalik
@@ -11535,6 +11575,10 @@ PrefabInstance:
     - target: {fileID: 7481724526216358343, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7934986728464269172, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
+      propertyPath: m_Name
+      value: "Mal\u0131kPhoto"
       objectReference: {fileID: 0}
     - target: {fileID: 8090366771053717973, guid: 13548b751e1ff24419064cc462b5f136, type: 3}
       propertyPath: m_SizeDelta.x
@@ -11572,6 +11616,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 986750154}
     m_Modifications:
+    - target: {fileID: 361148650600209659, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
+      propertyPath: m_Name
+      value: SelectBtn
+      objectReference: {fileID: 0}
     - target: {fileID: 1970766132364518905, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
       propertyPath: m_SizeDelta.x
       value: 180
@@ -11584,6 +11632,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -337
       objectReference: {fileID: 0}
+    - target: {fileID: 3132147650058054408, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
+      propertyPath: m_Name
+      value: ColosPhoto
+      objectReference: {fileID: 0}
     - target: {fileID: 4484536017010779554, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 52
@@ -11591,6 +11643,10 @@ PrefabInstance:
     - target: {fileID: 4484536017010779554, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4784704968489416872, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
+      propertyPath: m_Name
+      value: NameText
       objectReference: {fileID: 0}
     - target: {fileID: 6122828260615077503, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
       propertyPath: m_SizeDelta.x
@@ -11683,6 +11739,10 @@ PrefabInstance:
     - target: {fileID: 7360906574509805300, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880216948919367683, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
+      propertyPath: m_Name
+      value: DetailsBtn
       objectReference: {fileID: 0}
     - target: {fileID: 8295559916278971392, guid: 6811dc2c96ee1414980e81fb6228e02b, type: 3}
       propertyPath: m_AnchoredPosition.x
