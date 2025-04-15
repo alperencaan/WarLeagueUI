@@ -13,7 +13,7 @@ ICharacterCard	                 _selectedCard	               O anda seçili olan
 
 
 Properties:
-Erişim            Tip:                              İsim:                        Açıklama:
+Erişim:           Tip:                              İsim:                        Açıklama:
 public            IReadOnlyList<ICharacterCard>	    CharacterCards               Tüm kartları arayüz (interface) olarak dışarı verir
 public            ICharacterCard                    SelectedCard                 O anda seçili olan kart
 public            int                               MaxSelectedCharacters        Maksimum seçim sayısı (readonly)
