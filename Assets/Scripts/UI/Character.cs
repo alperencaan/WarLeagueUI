@@ -1,35 +1,16 @@
 using UnityEngine;
 
-public class Character
+public class Character : ICharacter
 {
-    private string _name;
-    private Sprite _icon;
-    private int _id;
-    private string _description;
+    private readonly int _id;
+    private readonly string _name;
+    private readonly Sprite _icon;
+    private readonly string _description;
 
-    public string Name 
-    { 
-        get => _name;
-        private set => _name = value;
-    }
-
-    public Sprite Icon
-    {
-        get => _icon;
-        private set => _icon = value;
-    }
-
-    public int Id
-    {
-        get => _id;
-        private set => _id = value;
-    }
-
-    public string Description
-    {
-        get => _description;
-        private set => _description = value;
-    }
+    public int Id => _id;
+    public string Name => _name;
+    public Sprite Icon => _icon;
+    public string Description => _description;
 
     public Character(int id, string name, Sprite icon, string description = "")
     {

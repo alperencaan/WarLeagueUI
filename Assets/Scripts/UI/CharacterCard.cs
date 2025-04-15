@@ -3,22 +3,35 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class CharacterCard : MonoBehaviour
+[RequireComponent(typeof(Button))]
+public class CharacterCard : MonoBehaviour, ICharacterCard
 {
-    [Header("UI References")]
-    [SerializeField] private Image characterImage;
-    [SerializeField] private TextMeshProUGUI nameText;
-    [SerializeField] private Button selectButton;
-    [SerializeField] private TextMeshProUGUI buttonText;
-    [SerializeField] private Image cardBorder;
-    
-    private bool _isSelected = false;
-    private Character _character;
-    
-    public event Action<CharacterCard, bool> OnSelectionChanged;
-    
-    public Character Character => _character;
+    [Header("UI Components")]
+    [SerializeField] private Image _characterImage;
+    [SerializeField] private TextMeshProUGUI _nameText;
+    [SerializeField] private Button _selectButton;
+    [SerializeField] private TextMeshProUGUI _buttonText;
+    [SerializeField] private Image _cardBorder;
+
+    private ICharacter _character;
+    private bool _isSelected;
+
+    public ICharacter Character => _character;
     public bool IsSelected => _isSelected;
+    
+    public event Action<ICharacterCard, bool> OnSelectionChanged;
+
+    private void Awake()
+    {
+        ValidateComponents();
+    }
+
+    private void ValidateComponents()
+    {
+        if (_selectButton == null) _selectButton = GetComponent<Button>();
+        if (_characterImage == null) _characterImage = GetComponentInChildren<Image>();
+        if (_nameText == null) _nameText = GetComponentInChildren<TextMeshProUGUI>();
+    }
 
     private void Start()
     {
@@ -27,15 +40,15 @@ public class CharacterCard : MonoBehaviour
 
     private void InitializeUI()
     {
-        if (selectButton != null)
+        if (_selectButton != null)
         {
-            selectButton.onClick.AddListener(OnSelectButton);
+            _selectButton.onClick.AddListener(OnSelectButton);
             UpdateButtonText(false);
         }
         UpdateVisuals(false);
     }
 
-    public void Initialize(Character character)
+    public void Initialize(ICharacter character)
     {
         _character = character;
         UpdateCardInfo();
@@ -45,8 +58,8 @@ public class CharacterCard : MonoBehaviour
     {
         if (_character == null) return;
         
-        if (nameText != null) nameText.text = _character.Name;
-        if (characterImage != null) characterImage.sprite = _character.Icon;
+        if (_nameText != null) _nameText.text = _character.Name;
+        if (_characterImage != null) _characterImage.sprite = _character.Icon;
     }
 
     private void OnSelectButton()
@@ -67,28 +80,36 @@ public class CharacterCard : MonoBehaviour
 
     private void UpdateButtonText(bool selected)
     {
-        if (buttonText == null) return;
+        if (_buttonText == null) return;
         
-        buttonText.text = selected ? "SELECTED" : "SELECT";
-        buttonText.fontSize = selected ? 32 : 28;
-        buttonText.fontStyle = FontStyles.Bold;
-        buttonText.color = selected ? new Color(1f, 0.6f, 0f, 1f) : new Color(1f, 1f, 1f, 0.9f);
+        _buttonText.text = selected ? "SELECTED" : "SELECT";
+        _buttonText.fontSize = selected ? 32 : 28;
+        _buttonText.fontStyle = FontStyles.Bold;
+        _buttonText.color = selected ? new Color(1f, 0.6f, 0f, 1f) : new Color(1f, 1f, 1f, 0.9f);
     }
 
     private void UpdateVisuals(bool selected)
     {
-        if (selectButton != null)
+        if (_selectButton != null)
         {
-            selectButton.image.color = selected ? 
+            _selectButton.image.color = selected ? 
                 new Color(0.8f, 0.4f, 0f, 1f) : 
                 new Color(0.6f, 0.3f, 0f, 1f);
         }
 
-        if (cardBorder != null)
+        if (_cardBorder != null)
         {
-            cardBorder.color = selected ? 
+            _cardBorder.color = selected ? 
                 new Color(1f, 0.7f, 0f, 1f) : 
                 new Color(1f, 0.5f, 0f, 0.5f);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_selectButton != null)
+        {
+            _selectButton.onClick.RemoveListener(OnSelectButton);
         }
     }
 } 

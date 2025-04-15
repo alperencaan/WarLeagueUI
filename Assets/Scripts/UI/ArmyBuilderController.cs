@@ -9,10 +9,10 @@ public class ArmyBuilderController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _selectionText;
     [SerializeField] private int _maxSelectedCharacters = 1;
 
-    private CharacterCard _selectedCard;
+    private ICharacterCard _selectedCard;
     
-    public IReadOnlyList<CharacterCard> CharacterCards => _characterCards;
-    public CharacterCard SelectedCard => _selectedCard;
+    public IReadOnlyList<ICharacterCard> CharacterCards => _characterCards.ConvertAll(card => card as ICharacterCard);
+    public ICharacterCard SelectedCard => _selectedCard;
     public int MaxSelectedCharacters => _maxSelectedCharacters;
 
     private void Start()
@@ -22,20 +22,23 @@ public class ArmyBuilderController : MonoBehaviour
 
     private void InitializeCharacterCards()
     {
-        CharacterCard[] cards = GetComponentsInChildren<CharacterCard>(true);
+        var cards = GetComponentsInChildren<CharacterCard>(true);
         _characterCards.AddRange(cards);
 
         foreach (var card in _characterCards)
         {
-            card.OnSelectionChanged += HandleCardSelection;
+            if (card != null)
+            {
+                card.OnSelectionChanged += HandleCardSelection;
+            }
         }
 
         UpdateSelectionText();
     }
 
-    private void HandleCardSelection(CharacterCard card, bool isSelected)
+    private void HandleCardSelection(ICharacterCard card, bool isSelected)
     {
-        if (isSelected)
+        if (isSelected && card != null)
         {
             HandleNewSelection(card);
         }
@@ -47,7 +50,7 @@ public class ArmyBuilderController : MonoBehaviour
         UpdateSelectionText();
     }
 
-    private void HandleNewSelection(CharacterCard card)
+    private void HandleNewSelection(ICharacterCard card)
     {
         if (_selectedCard != null && _selectedCard != card)
         {
@@ -56,7 +59,7 @@ public class ArmyBuilderController : MonoBehaviour
         _selectedCard = card;
     }
 
-    private void HandleDeselection(CharacterCard card)
+    private void HandleDeselection(ICharacterCard card)
     {
         if (_selectedCard == card)
         {
@@ -68,7 +71,7 @@ public class ArmyBuilderController : MonoBehaviour
     {
         if (_selectionText == null) return;
 
-        if (_selectedCard != null)
+        if (_selectedCard != null && _selectedCard.Character != null)
         {
             string characterName = _selectedCard.Character.Name;
             _selectionText.text = $"{characterName} SELECTED!";
@@ -83,6 +86,18 @@ public class ArmyBuilderController : MonoBehaviour
 
     public bool IsCharacterSelected(string characterName)
     {
-        return _selectedCard != null && _selectedCard.Character.Name == characterName;
+        return _selectedCard?.Character != null && 
+               _selectedCard.Character.Name == characterName;
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var card in _characterCards)
+        {
+            if (card != null)
+            {
+                card.OnSelectionChanged -= HandleCardSelection;
+            }
+        }
     }
 } 
