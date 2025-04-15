@@ -1,4 +1,5 @@
 using UnityEngine;
+using WarLeague.Interfaces;
 
 namespace WarLeague.Models
 {

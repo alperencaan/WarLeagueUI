@@ -58,7 +58,7 @@ namespace WarLeague.Controllers
         private void LoadSettings()
         {
             if (_masterVolumeSlider != null)
-                _masterVolumeSlider.value = AudioManager.Instance.MasterVolume;
+                _masterVolumeSlider.value = AudioController.Instance.MasterVolume;
             
             if (_musicVolumeSlider != null)
                 _musicVolumeSlider.value = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 0.5f);
@@ -108,7 +108,7 @@ namespace WarLeague.Controllers
 
         private void HandleMasterVolumeChanged(float value)
         {
-            AudioManager.Instance.SetMasterVolume(value);
+            AudioController.Instance.SetMasterVolume(value);
             UpdateUI();
         }
 
@@ -153,7 +153,6 @@ namespace WarLeague.Controllers
         private void SaveSettings()
         {
             PlayerPrefs.Save();
-            // TODO: Kaydetme onayı göster
         }
 
         private void HandleBack()
