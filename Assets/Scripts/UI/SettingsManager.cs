@@ -5,122 +5,169 @@ using System.Collections.Generic;
 
 public class SettingsManager : MonoBehaviour
 {
-    [Header("Ses Ayarları")]
-    [SerializeField] private Slider masterVolumeSlider;
-    [SerializeField] private Slider musicVolumeSlider;
-    [SerializeField] private TMP_Text masterVolumeText;
-    [SerializeField] private TMP_Text musicVolumeText;
+    [Header("Audio Settings")]
+    [SerializeField] private Slider _masterVolumeSlider;
+    [SerializeField] private Slider _musicVolumeSlider;
+    [SerializeField] private TMP_Text _masterVolumeText;
+    [SerializeField] private TMP_Text _musicVolumeText;
 
-    [Header("Parlaklık Ayarları")]
-    [SerializeField] private Slider brightnessSlider;
-    [SerializeField] private TMP_Text brightnessText;
-    [SerializeField] private Image brightnessOverlay;
+    [Header("Display Settings")]
+    [SerializeField] private Slider _brightnessSlider;
+    [SerializeField] private TMP_Text _brightnessText;
+    [SerializeField] private Image _brightnessOverlay;
 
-    [Header("Oyun Ayarları")]
-    [SerializeField] private Toggle tutorialTipsToggle;
-    [SerializeField] private Toggle autoSaveToggle;
-    [SerializeField] private TMP_Dropdown difficultyDropdown;
+    [Header("Game Settings")]
+    [SerializeField] private Toggle _tutorialTipsToggle;
+    [SerializeField] private Toggle _autoSaveToggle;
+    [SerializeField] private TMP_Dropdown _difficultyDropdown;
 
-    [Header("UI Butonları")]
-    [SerializeField] private Button saveButton;
-    [SerializeField] private Button backButton;
+    [Header("UI Controls")]
+    [SerializeField] private Button _saveButton;
+    [SerializeField] private Button _backButton;
+
+    private const string MUSIC_VOLUME_KEY = "MusicVolume";
+    private const string BRIGHTNESS_KEY = "Brightness";
+    private const string TUTORIAL_TIPS_KEY = "TutorialTips";
+    private const string AUTO_SAVE_KEY = "AutoSave";
+    private const string DIFFICULTY_KEY = "Difficulty";
 
     private void Start()
     {
+        InitializeUI();
         LoadSettings();
-        SetupListeners();
+        SetupEventListeners();
+    }
+
+    private void InitializeUI()
+    {
         SetupDifficultyDropdown();
+        UpdateUI();
     }
 
     private void SetupDifficultyDropdown()
     {
-        difficultyDropdown.ClearOptions();
-        difficultyDropdown.AddOptions(new List<string> { "Kolay", "Orta", "Zor" });
+        if (_difficultyDropdown != null)
+        {
+            _difficultyDropdown.ClearOptions();
+            _difficultyDropdown.AddOptions(new List<string> { "Easy", "Normal", "Hard" });
+        }
     }
 
     private void LoadSettings()
     {
-        masterVolumeSlider.value = AudioManager.Instance.GetMasterVolume();
-        musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
-        brightnessSlider.value = PlayerPrefs.GetFloat("Brightness", 1f);
-        UpdateBrightness(brightnessSlider.value);
-        UpdateUI();
+        if (_masterVolumeSlider != null)
+            _masterVolumeSlider.value = AudioManager.Instance.MasterVolume;
+        
+        if (_musicVolumeSlider != null)
+            _musicVolumeSlider.value = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 0.5f);
+        
+        if (_brightnessSlider != null)
+        {
+            _brightnessSlider.value = PlayerPrefs.GetFloat(BRIGHTNESS_KEY, 1f);
+            UpdateBrightness(_brightnessSlider.value);
+        }
+
+        if (_tutorialTipsToggle != null)
+            _tutorialTipsToggle.isOn = PlayerPrefs.GetInt(TUTORIAL_TIPS_KEY, 1) == 1;
+        
+        if (_autoSaveToggle != null)
+            _autoSaveToggle.isOn = PlayerPrefs.GetInt(AUTO_SAVE_KEY, 1) == 1;
+        
+        if (_difficultyDropdown != null)
+            _difficultyDropdown.value = PlayerPrefs.GetInt(DIFFICULTY_KEY, 1);
     }
 
-    private void SetupListeners()
+    private void SetupEventListeners()
     {
-        masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
-        musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
-        brightnessSlider.onValueChanged.AddListener(OnBrightnessChanged);
-
-        tutorialTipsToggle.onValueChanged.AddListener(OnTutorialTipsChanged);
-        autoSaveToggle.onValueChanged.AddListener(OnAutoSaveChanged);
-        difficultyDropdown.onValueChanged.AddListener(OnDifficultyChanged);
-
-        saveButton.onClick.AddListener(SaveSettings);
-        backButton.onClick.AddListener(OnBackButtonClicked);
+        if (_masterVolumeSlider != null)
+            _masterVolumeSlider.onValueChanged.AddListener(HandleMasterVolumeChanged);
+        
+        if (_musicVolumeSlider != null)
+            _musicVolumeSlider.onValueChanged.AddListener(HandleMusicVolumeChanged);
+        
+        if (_brightnessSlider != null)
+            _brightnessSlider.onValueChanged.AddListener(HandleBrightnessChanged);
+        
+        if (_tutorialTipsToggle != null)
+            _tutorialTipsToggle.onValueChanged.AddListener(HandleTutorialTipsChanged);
+        
+        if (_autoSaveToggle != null)
+            _autoSaveToggle.onValueChanged.AddListener(HandleAutoSaveChanged);
+        
+        if (_difficultyDropdown != null)
+            _difficultyDropdown.onValueChanged.AddListener(HandleDifficultyChanged);
+        
+        if (_saveButton != null)
+            _saveButton.onClick.AddListener(SaveSettings);
+        
+        if (_backButton != null)
+            _backButton.onClick.AddListener(HandleBack);
     }
 
-    private void OnMasterVolumeChanged(float value)
+    private void HandleMasterVolumeChanged(float value)
     {
         AudioManager.Instance.SetMasterVolume(value);
         UpdateUI();
     }
 
-    private void OnMusicVolumeChanged(float value)
+    private void HandleMusicVolumeChanged(float value)
     {
-        PlayerPrefs.SetFloat("MusicVolume", value);
+        PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, value);
         UpdateUI();
     }
 
-    private void OnBrightnessChanged(float value)
+    private void HandleBrightnessChanged(float value)
     {
-        PlayerPrefs.SetFloat("Brightness", value);
+        PlayerPrefs.SetFloat(BRIGHTNESS_KEY, value);
         UpdateBrightness(value);
         UpdateUI();
     }
 
-    private void UpdateBrightness(float brightnessValue)
+    private void UpdateBrightness(float value)
     {
-        if (brightnessOverlay != null)
+        if (_brightnessOverlay != null)
         {
-            Color color = brightnessOverlay.color;
-            color.a = 1f - brightnessValue;
-            brightnessOverlay.color = color;
+            var color = _brightnessOverlay.color;
+            color.a = 1f - value;
+            _brightnessOverlay.color = color;
         }
     }
 
-    private void OnTutorialTipsChanged(bool enabled)
+    private void HandleTutorialTipsChanged(bool enabled)
     {
-        PlayerPrefs.SetInt("TutorialTips", enabled ? 1 : 0);
+        PlayerPrefs.SetInt(TUTORIAL_TIPS_KEY, enabled ? 1 : 0);
     }
 
-    private void OnAutoSaveChanged(bool enabled)
+    private void HandleAutoSaveChanged(bool enabled)
     {
-        PlayerPrefs.SetInt("AutoSave", enabled ? 1 : 0);
+        PlayerPrefs.SetInt(AUTO_SAVE_KEY, enabled ? 1 : 0);
     }
 
-    private void OnDifficultyChanged(int value)
+    private void HandleDifficultyChanged(int value)
     {
-        PlayerPrefs.SetInt("Difficulty", value);
+        PlayerPrefs.SetInt(DIFFICULTY_KEY, value);
     }
 
     private void SaveSettings()
     {
         PlayerPrefs.Save();
-        // TODO: Implement save feedback (örn: "Ayarlar kaydedildi" mesajı)
+        // TODO: Show save confirmation feedback
     }
 
-    private void OnBackButtonClicked()
+    private void HandleBack()
     {
-        // TODO: Implement back button functionality
-        // Örneğin: SceneManager.LoadScene("MainMenu");
+        gameObject.SetActive(false);
     }
 
     private void UpdateUI()
     {
-        masterVolumeText.text = $"{(masterVolumeSlider.value * 100):F0}%";
-        musicVolumeText.text = $"{(musicVolumeSlider.value * 100):F0}%";
-        brightnessText.text = $"{(brightnessSlider.value * 100):F0}%";
+        if (_masterVolumeText != null && _masterVolumeSlider != null)
+            _masterVolumeText.text = $"{(_masterVolumeSlider.value * 100):F0}%";
+        
+        if (_musicVolumeText != null && _musicVolumeSlider != null)
+            _musicVolumeText.text = $"{(_musicVolumeSlider.value * 100):F0}%";
+        
+        if (_brightnessText != null && _brightnessSlider != null)
+            _brightnessText.text = $"{(_brightnessSlider.value * 100):F0}%";
     }
 } 

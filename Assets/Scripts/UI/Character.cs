@@ -4,22 +4,38 @@ public class Character
 {
     private string _name;
     private Sprite _icon;
+    private int _id;
+    private string _description;
 
     public string Name 
     { 
         get => _name;
-        set => _name = value;
+        private set => _name = value;
     }
 
     public Sprite Icon
     {
         get => _icon;
-        set => _icon = value;
+        private set => _icon = value;
     }
 
-    public Character(string name, Sprite icon)
+    public int Id
     {
+        get => _id;
+        private set => _id = value;
+    }
+
+    public string Description
+    {
+        get => _description;
+        private set => _description = value;
+    }
+
+    public Character(int id, string name, Sprite icon, string description = "")
+    {
+        _id = id;
         _name = name;
         _icon = icon;
+        _description = description;
     }
 } 

@@ -6,113 +6,159 @@ using UnityEngine.SceneManagement;
 public class LoginManager : MonoBehaviour
 {
     [Header("Input Fields")]
-    [SerializeField] private TMP_InputField usernameField;
-    [SerializeField] private TMP_InputField passwordField;
+    [SerializeField] private TMP_InputField _usernameField;
+    [SerializeField] private TMP_InputField _passwordField;
+    [SerializeField] private TMP_InputField _confirmPasswordField;
 
     [Header("Buttons")]
-    [SerializeField] private Button startBattleButton;
-    [SerializeField] private Button forgotPasswordButton;
-    [SerializeField] private Button newWarriorButton;
+    [SerializeField] private Button _loginButton;
+    [SerializeField] private Button _registerButton;
+    [SerializeField] private Button _forgotPasswordButton;
 
-    [Header("UI Elements")]
-    [SerializeField] private TextMeshProUGUI errorMessageText;
-    [SerializeField] private GameObject errorMessagePanel;
+    [Header("UI Text Elements")]
+    [SerializeField] private TextMeshProUGUI _titleText;
+    [SerializeField] private TextMeshProUGUI _subtitleText;
+    [SerializeField] private TextMeshProUGUI _errorText;
+    [SerializeField] private TextMeshProUGUI _copyrightText;
+
+    private const string MAIN_MENU_SCENE = "MainMenuScene";
+    private const int MIN_USERNAME_LENGTH = 3;
+    private const int MIN_PASSWORD_LENGTH = 6;
 
     private void Start()
     {
-        // Başlangıçta hata mesajını gizle
-        if (errorMessagePanel) errorMessagePanel.SetActive(false);
-        
-        // Başlangıçta Start Battle butonunu deaktif et
-        SetStartBattleButtonState(false);
-
-        // Input field event listeners
-        usernameField.onValueChanged.AddListener(OnInputValueChanged);
-        passwordField.onValueChanged.AddListener(OnInputValueChanged);
-
-        // Button click listeners
-        startBattleButton.onClick.AddListener(OnStartBattleClicked);
-        forgotPasswordButton.onClick.AddListener(OnForgotPasswordClicked);
-        newWarriorButton.onClick.AddListener(OnNewWarriorClicked);
+        InitializeUI();
+        SetupEventListeners();
     }
 
-    private void OnInputValueChanged(string value)
+    private void InitializeUI()
     {
-        // Input değiştiğinde hata mesajını temizle
-        HideErrorMessage();
-        
-        // Input validation
-        ValidateInputs();
+        SetupUITexts();
+        SetupInputFields();
+        UpdateLoginButtonState(false);
+        HideError();
+    }
+
+    private void SetupUITexts()
+    {
+        _titleText.text = "WARLEAGUE™";
+        _subtitleText.text = "MOBILE";
+        _copyrightText.text = "©2024 WARLEAGUE™";
+    }
+
+    private void SetupInputFields()
+    {
+        SetInputFieldProperties(_usernameField, "Username", TMP_InputField.ContentType.Standard);
+        SetInputFieldProperties(_passwordField, "Password", TMP_InputField.ContentType.Password);
+        SetInputFieldProperties(_confirmPasswordField, "Confirm Password", TMP_InputField.ContentType.Password);
+    }
+
+    private void SetInputFieldProperties(TMP_InputField field, string placeholder, TMP_InputField.ContentType contentType)
+    {
+        if (field != null)
+        {
+            field.contentType = contentType;
+            field.placeholder.GetComponent<TextMeshProUGUI>().text = placeholder;
+        }
+    }
+
+    private void SetupEventListeners()
+    {
+        _usernameField.onValueChanged.AddListener(_ => ValidateInputs());
+        _passwordField.onValueChanged.AddListener(_ => ValidateInputs());
+        _confirmPasswordField.onValueChanged.AddListener(_ => ValidateInputs());
+
+        _loginButton.onClick.AddListener(HandleLogin);
+        _registerButton.onClick.AddListener(HandleRegistration);
+        _forgotPasswordButton.onClick.AddListener(HandleForgotPassword);
     }
 
     private void ValidateInputs()
     {
-        bool isValid = !string.IsNullOrEmpty(usernameField.text) && 
-                      !string.IsNullOrEmpty(passwordField.text) &&
-                      usernameField.text.Length >= 3 &&
-                      passwordField.text.Length >= 6;
-
-        SetStartBattleButtonState(isValid);
-    }
-
-    private void SetStartBattleButtonState(bool isEnabled)
-    {
-        startBattleButton.interactable = isEnabled;
-
-        // Buton rengini duruma göre ayarla
-        var colors = startBattleButton.colors;
-        colors.normalColor = isEnabled ? new Color(1f, 0.65f, 0f) : new Color(0.5f, 0.5f, 0.5f);
-        startBattleButton.colors = colors;
-    }
-
-    private void OnStartBattleClicked()
-    {
-        // Login işlemi
-        if (ValidateLoginCredentials())
+        bool isValid = ValidateLoginFields();
+        UpdateLoginButtonState(isValid);
+        
+        if (isValid)
         {
-            // Başarılı login - Ana menüye yönlendir
-            Debug.Log("Login successful! Redirecting to main menu...");
-            // TODO: Add your scene loading or menu transition code here
-            // SceneManager.LoadScene("MainMenu");
+            HideError();
+        }
+    }
+
+    private bool ValidateLoginFields()
+    {
+        return !string.IsNullOrEmpty(_usernameField.text) &&
+               !string.IsNullOrEmpty(_passwordField.text) &&
+               _usernameField.text.Length >= MIN_USERNAME_LENGTH &&
+               _passwordField.text.Length >= MIN_PASSWORD_LENGTH;
+    }
+
+    private void UpdateLoginButtonState(bool isEnabled)
+    {
+        _loginButton.interactable = isEnabled;
+        var colors = _loginButton.colors;
+        colors.normalColor = isEnabled ? new Color(1f, 0.65f, 0f) : new Color(0.5f, 0.5f, 0.5f);
+        _loginButton.colors = colors;
+    }
+
+    private void HandleLogin()
+    {
+        if (ValidateLoginFields())
+        {
+            // TODO: Implement actual login logic here
+            LoadMainMenu();
         }
         else
         {
-            ShowErrorMessage("Invalid username or password!");
+            ShowError("Invalid username or password!");
         }
     }
 
-    private bool ValidateLoginCredentials()
+    private void HandleRegistration()
     {
-        // TODO: Implement your actual login validation logic here
-        // This is just a basic example
-        return usernameField.text.Length >= 3 && passwordField.text.Length >= 6;
-    }
-
-    private void OnForgotPasswordClicked()
-    {
-        Debug.Log("Forgot password clicked");
-        // TODO: Implement forgot password logic
-        // Example: Open forgot password panel or load forgot password scene
-    }
-
-    private void OnNewWarriorClicked()
-    {
-        Debug.Log("New warrior registration clicked");
-        // TODO: Implement new warrior registration logic
-        // Example: Open registration panel or load registration scene
-    }
-
-    private void ShowErrorMessage(string message)
-    {
-        if (errorMessageText)
+        if (_passwordField.text != _confirmPasswordField.text)
         {
-            errorMessageText.text = message;
-            if (errorMessagePanel) errorMessagePanel.SetActive(true);
+            ShowError("Passwords do not match!");
+            return;
+        }
+
+        // TODO: Implement actual registration logic here
+        Debug.Log($"Registering new user: {_usernameField.text}");
+        LoadMainMenu();
+    }
+
+    private void HandleForgotPassword()
+    {
+        // TODO: Implement forgot password logic
+        Debug.Log("Forgot password process initiated");
+    }
+
+    private void LoadMainMenu()
+    {
+        try
+        {
+            SceneManager.LoadScene(MAIN_MENU_SCENE);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to load {MAIN_MENU_SCENE}: {e.Message}");
+            ShowError("Failed to load main menu");
         }
     }
 
-    private void HideErrorMessage()
+    private void ShowError(string message)
     {
-        if (errorMessagePanel) errorMessagePanel.SetActive(false);
+        if (_errorText != null)
+        {
+            _errorText.text = message;
+            _errorText.gameObject.SetActive(true);
+        }
+    }
+
+    private void HideError()
+    {
+        if (_errorText != null)
+        {
+            _errorText.gameObject.SetActive(false);
+        }
     }
 } 

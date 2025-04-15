@@ -3,85 +3,100 @@ using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
-    private static AudioManager instance;
+    private static AudioManager _instance;
+    
+    [Header("Audio Settings")]
+    [SerializeField] private AudioMixer _audioMixer;
+    
+    private const string MASTER_VOLUME_KEY = "MasterVolume";
+    private const string SFX_VOLUME_KEY = "SFXVolume";
+    private const string MASTER_VOLUME_MIXER = "MasterVolume";
+    private const string SFX_VOLUME_MIXER = "SFXVolume";
+    
+    private float _masterVolume = 1f;
+    private float _sfxVolume = 1f;
+
     public static AudioManager Instance
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = FindAnyObjectByType<AudioManager>();
-                if (instance == null)
+                _instance = FindAnyObjectByType<AudioManager>();
+                if (_instance == null)
                 {
-                    GameObject go = new GameObject("AudioManager");
-                    instance = go.AddComponent<AudioManager>();
+                    var go = new GameObject("AudioManager");
+                    _instance = go.AddComponent<AudioManager>();
                 }
             }
-            return instance;
+            return _instance;
         }
     }
 
-    [Header("Audio Mixers")]
-    [SerializeField] private AudioMixer audioMixer;
-    
-    private const string MASTER_VOLUME = "MasterVolume";
-    private const string SFX_VOLUME = "SFXVolume";
-    
-    private float masterVolume = 1f;
-    private float sfxVolume = 1f;
+    public float MasterVolume => _masterVolume;
+    public float SFXVolume => _sfxVolume;
 
     private void Awake()
     {
-        if (instance == null)
+        InitializeSingleton();
+        LoadAudioSettings();
+    }
+
+    private void InitializeSingleton()
+    {
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (instance != this)
+        else if (_instance != this)
         {
             Destroy(gameObject);
         }
-
-        LoadAudioSettings();
     }
 
     private void LoadAudioSettings()
     {
-        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
-        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        _masterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, 1f);
+        _sfxVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
         
-        SetMasterVolume(masterVolume);
-        SetSFXVolume(sfxVolume);
+        SetMasterVolume(_masterVolume);
+        SetSFXVolume(_sfxVolume);
     }
 
     public void SetMasterVolume(float volume)
     {
-        masterVolume = volume;
-        // Convert to decibels (dB) for AudioMixer
-        float dB = Mathf.Log10(Mathf.Max(0.0001f, volume)) * 20f;
-        audioMixer.SetFloat(MASTER_VOLUME, dB);
-        PlayerPrefs.SetFloat("MasterVolume", volume);
-        PlayerPrefs.Save();
+        _masterVolume = Mathf.Clamp01(volume);
+        float dB = ConvertToDecibels(_masterVolume);
+        _audioMixer.SetFloat(MASTER_VOLUME_MIXER, dB);
+        SaveVolumeSettings(MASTER_VOLUME_KEY, _masterVolume);
     }
 
     public void SetSFXVolume(float volume)
     {
-        sfxVolume = volume;
-        // Convert to decibels (dB) for AudioMixer
-        float dB = Mathf.Log10(Mathf.Max(0.0001f, volume)) * 20f;
-        audioMixer.SetFloat(SFX_VOLUME, dB);
-        PlayerPrefs.SetFloat("SFXVolume", volume);
+        _sfxVolume = Mathf.Clamp01(volume);
+        float dB = ConvertToDecibels(_sfxVolume);
+        _audioMixer.SetFloat(SFX_VOLUME_MIXER, dB);
+        SaveVolumeSettings(SFX_VOLUME_KEY, _sfxVolume);
+    }
+
+    private float ConvertToDecibels(float volume)
+    {
+        return Mathf.Log10(Mathf.Max(0.0001f, volume)) * 20f;
+    }
+
+    private void SaveVolumeSettings(string key, float value)
+    {
+        PlayerPrefs.SetFloat(key, value);
         PlayerPrefs.Save();
     }
 
-    public float GetMasterVolume()
+    public void PlaySound(AudioClip clip, Vector3 position, float volume = 1f)
     {
-        return masterVolume;
-    }
-
-    public float GetSFXVolume()
-    {
-        return sfxVolume;
+        if (clip != null)
+        {
+            AudioSource.PlayClipAtPoint(clip, position, volume * _masterVolume);
+        }
     }
 
     // Test için örnek ses çalma metodu
