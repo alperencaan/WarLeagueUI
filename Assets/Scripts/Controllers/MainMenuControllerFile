@@ -1,0 +1,74 @@
+Namespace:
+WarLeague.Controllers
+
+ Class: MainMenuController : MonoBehaviour
+Unity'nin MonoBehaviour sýnýfýndan türetilmiþ. Bu sýnýf, ana menüdeki butonlarý yönetir ve kullanýcýyý doðru sahnelere yönlendirir. Ayrýca ayarlarý ve hakkýnda bilgileri gösteren panelleri kontrol eder.
+
+Fields:
+Tip | Ýsim | Açýklama
+Button | _startButton | "Baþla" butonu
+Button | _armyBuilderButton | "Army Builder" butonu
+Button | _settingsButton | "Ayarlar" butonu
+Button | _aboutButton | "Hakkýnda" butonu
+const string | GAME_SCENE | Oyun sahnesinin adý
+const string | ARMY_BUILDER_SCENE | Army Builder sahnesinin adý
+GameObject | _settingsPanel | Ayarlar paneli
+GameObject | _aboutPanel | Hakkýnda paneli
+
+
+Constants:
+Sabit | Açýklama
+GAME_SCENE | Oyun sahnesinin adý
+ARMY_BUILDER_SCENE | Army Builder sahnesinin adý
+
+
+Properties:
+Eriþim | Tip | Ýsim | Açýklama
+public | Button | StartButton | Baþlatma butonu
+public | Button | ArmyBuilderButton | Army Builder butonu
+public | Button | SettingsButton | Ayarlar butonu
+public | Button | AboutButton | Hakkýnda butonu
+public | GameObject | SettingsPanel | Ayarlar paneli
+public | GameObject | AboutPanel | Hakkýnda paneli
+
+Methods:
+Metot | Açýklama
+Start() | UI baþlatýlýr ve buton dinleyicileri eklenir
+InitializeUI() | UI panelleri baþlangýçta gizlenir
+SetupButtonListeners() | Butonlara dinleyiciler eklenir
+HandleStartGame() | Oyun sahnesi yüklenir
+HandleArmyBuilder() | Army Builder sahnesi yüklenir
+HandleSettings() | Ayarlar paneli açýlýr, Hakkýnda paneli kapanýr
+HandleAbout() | Hakkýnda paneli açýlýr, Ayarlar paneli kapanýr
+LoadScene(string) | Belirtilen sahne yüklenir
+
+
+aðýmlýlýklar:
+UnityEngine.UI
+
+UnityEngine.SceneManagement
+
+UnityEngine.GameObject
+
+
++------------------------------------------+
+|            MainMenuController            |
+|------------------------------------------|
+| - _startButton: Button                   |
+| - _armyBuilderButton: Button             |
+| - _settingsButton: Button                |
+| - _aboutButton: Button                   |
+| - GAME_SCENE: string                     |
+| - ARMY_BUILDER_SCENE: string             |
+| - _settingsPanel: GameObject             |
+| - _aboutPanel: GameObject                |
+|------------------------------------------|
+| + Start()                                |
+| + InitializeUI()                         |
+| + SetupButtonListeners()                 |
+| + HandleStartGame()                      |
+| + HandleArmyBuilder()                    |
+| + HandleSettings()                       |
+| + HandleAbout()                          |
+| + LoadScene(sceneName: string)           |
++------------------------------------------+
