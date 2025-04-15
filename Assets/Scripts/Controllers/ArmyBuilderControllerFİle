@@ -1,0 +1,72 @@
+﻿NameSpace: WarLeague.Controllers
+
+
+Class:ArmyBuilderController: MonoBehaviour
+Unity'de bir bileşen (component) olarak çalışır. Oyundaki karakter kartlarını yönetir.
+
+Fields:
+Tip:                              İsim:                        Açıklama:
+List<CharacterCardView>	         _characterCards	           UI’da gösterilecek karakter kartları listesi
+TextMeshProUGUI                  _selectionText	               Seçilen karakteri göstermek için kullanılan metin
+int                              _selectedCharacterIndex       Maksimum seçilebilecek karakter sayısı
+ICharacterCard	                 _selectedCard	               O anda seçili olan kartı tutar
+
+
+Properties:
+Erişim            Tip:                              İsim:                        Açıklama:
+public            IReadOnlyList<ICharacterCard>	    CharacterCards               Tüm kartları arayüz (interface) olarak dışarı verir
+public            ICharacterCard                    SelectedCard                 O anda seçili olan kart
+public            int                               MaxSelectedCharacters        Maksimum seçim sayısı (readonly)
+
+
+
+Methods:
+İsim:                                               Açıklama:	
+Start()	                                           Unity lifecycle – başlangıçta kartları hazırlar
+InitializeCharacterCards()	                       CharacterCardView komponentlerini bulur ve OnSelectionChanged eventine abone olur
+HandleCardSelection(card, isSelected)              Kart seçildiğinde/deseçildiğinde ne yapılacağını belirler
+HandleNewSelection(card)                           Yeni kart seçildiyse eskisini deseçer ve yenisini seçer
+HandleDeselection(card)	                           Kart deseçildiyse null'lar
+UpdateSelectionText()	                           UI’daki yazıyı günceller
+IsCharacterSelected(name)	                       Belirli karakter seçili mi diye kontrol eder
+OnDestroy()	                                       Event’leri temizler (memory leak önlenir)
+
+
+ Bağlı Olduğu Arayüz ve Sınıflar:
+ CharacterCardView (MonoBehaviour) → UI kartı
+
+ ICharacterCard → Bu interface üzerinden kartlarla etkileşim kuruluyor
+
+ Character ( ICharacterCard içinde Character property’si var)
+
+ +---------------------------+
+| ArmyBuilderController     |
+|---------------------------|
+| - _characterCards: List<CharacterCardView> |
+| - _selectionText: TextMeshProUGUI         |
+| - _maxSelectedCharacters: int             |
+| - _selectedCard: ICharacterCard           |
+|---------------------------|
+| + CharacterCards: IReadOnlyList<ICharacterCard> |
+| + SelectedCard: ICharacterCard            |
+| + MaxSelectedCharacters: int              |
+|---------------------------|
+| + Start()                                |
+| - InitializeCharacterCards()             |
+| - HandleCardSelection(card, isSelected)  |
+| - HandleNewSelection(card)               |
+| - HandleDeselection(card)                |
+| - UpdateSelectionText()                  |
+| + IsCharacterSelected(name): bool        |
+| - OnDestroy()                            |
++---------------------------+
+
+Bu script:
+
+UI’daki karakter kartlarını yönetiyor,
+
+Tek seçim sistemine göre çalışıyor (bir karakter seçilebiliyor),
+
+Seçime göre UI’yı güncelliyor,
+
+Event yönetimini doğru yapıyor.
