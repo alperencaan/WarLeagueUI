@@ -2,13 +2,17 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 
-public class ArmyBuilderManager : MonoBehaviour
+public class ArmyBuilderController : MonoBehaviour
 {
     [System.Serializable]
     public class Character
     {
-        public string name;
-        public Sprite icon;
+        private string _name;        
+        private Sprite _icon;      
+        
+        
+        public string Name { get; set; }
+        public Sprite Icon { get; set; }
     }
 
     public List<CharacterCard> characterCards = new List<CharacterCard>();
@@ -19,11 +23,10 @@ public class ArmyBuilderManager : MonoBehaviour
 
     void Start()
     {
-        // Find all character cards and add to list
+        
         CharacterCard[] cards = GetComponentsInChildren<CharacterCard>(true);
         characterCards.AddRange(cards);
 
-        // Add selection event to each card
         foreach (var card in characterCards)
         {
             card.OnSelectionChanged += HandleCardSelection;
@@ -36,7 +39,6 @@ public class ArmyBuilderManager : MonoBehaviour
     {
         if (isSelected)
         {
-            // If another card is selected, deselect it
             if (selectedCard != null && selectedCard != card)
             {
                 selectedCard.SetSelected(false);
