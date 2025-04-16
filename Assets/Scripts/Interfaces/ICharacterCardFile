@@ -1,0 +1,13 @@
++----------------------------------------------------+
+|                 ICharacterCard                     |
++----------------------------------------------------+
+| + Character: ICharacter { get; }                   |
+| + IsSelected: bool { get; }                        |
+| + OnSelectionChanged: event Action<ICharacterCard, |
+|                             bool>                  |
++----------------------------------------------------+
+| + SetSelected(selected: bool): void                |
+| + Initialize(character: ICharacter): void          |
++----------------------------------------------------+
+<< Interface >>
+<< Namespace: WarLeague.Interfaces >>

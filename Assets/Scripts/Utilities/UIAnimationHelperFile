@@ -1,0 +1,20 @@
++------------------------------------------------------+
+|              UIAnimationHelper                      |
++------------------------------------------------------+
+| << static >>                                         |
++------------------------------------------------------+
+| + FadeIn(canvasGroup: CanvasGroup, duration: float) |
+| + FadeOut(canvasGroup: CanvasGroup, duration: float)|
+| + ScaleIn(transform: Transform, duration: float)    |
+| + ScaleOut(transform: Transform, duration: float)   |
+| + SlideIn(rect: RectTransform, duration: float,     |
+|           direction: Direction)                     |
+| + SlideOut(rect: RectTransform, duration: float,    |
+|            direction: Direction)                    |
+| - GetStartPosition(rect: RectTransform,             |
+|                    direction: Direction): Vector2   |
++------------------------------------------------------+
+| enum Direction { Right, Left, Up, Down }            |
++------------------------------------------------------+
+<< MonoBehaviour >>
+<< Namespace: WarLeague.Utilities >>

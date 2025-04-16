@@ -1,0 +1,10 @@
++-----------------------------+
+|         ICharacter         |
++-----------------------------+
+| + Id: int { get; }         |
+| + Name: string { get; }    |
+| + Icon: Sprite { get; }    |
+| + Description: string { get; } |
++-----------------------------+
+<< Interface >>
+<< Namespace: WarLeague.Interfaces >>

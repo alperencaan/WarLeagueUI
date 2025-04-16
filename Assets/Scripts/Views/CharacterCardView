@@ -1,0 +1,41 @@
++------------------------------------------------------------+
+|                  CharacterCardView                         |
++------------------------------------------------------------+
+| - _characterImage: Image                                   |
+| - _nameText: TextMeshProUGUI                               |
+| - _selectButton: Button                                     |
+| - _buttonText: TextMeshProUGUI                             |
+| - _cardBorder: Image                                       |
+| - _character: ICharacter                                   |
+| - _isSelected: bool                                        |
++------------------------------------------------------------+
+| + Character: ICharacter { get; }                           |
+| + IsSelected: bool { get; }                                |
+| + OnSelectionChanged: event Action<ICharacterCard, bool>   |
+| + Initialize(character: ICharacter): void                  |
+| + SetSelected(selected: bool): void                        |
++------------------------------------------------------------+
+| - Awake(): void                                            |
+| - ValidateComponents(): void                               |
+| - Start(): void                                            |
+| - InitializeUI(): void                                     |
+| - UpdateCardInfo(): void                                   |
+| - OnSelectButton(): void                                   |
+| - UpdateButtonText(selected: bool): void                   |
+| - UpdateVisuals(selected: bool): void                      |
+| - OnDestroy(): void                                        |
++------------------------------------------------------------+
+<< MonoBehaviour, ICharacterCard >>
+<< Namespace: WarLeague.Views >>
+<< Uses: WarLeague.Interfaces.ICharacter >>
+ 
+
+
+ Notes:
+Awake, Start ve OnDestroy metodlarý Unity yaþam döngüsünün klasik parçalarý.
+
+OnSelectionChanged eventi dýþarýdan izlenebiliyor. Bu, UI dýþýndaki bileþenlerin kart seçimlerini takip edebilmesini saðlýyor.
+
+Initialize(ICharacter) ile dýþarýdan karakter bilgisi atanýyor.
+
+Arayüz, Unity bileþenleri (Image, TextMeshProUGUI, Button) ile direkt iliþki içinde.

@@ -1,0 +1,19 @@
++------------------------------------------------------------+
+|                    CharacterData                           |
++------------------------------------------------------------+
+| + Id: int                                                  |
+| + Name: string                                             |
+| + Description: string                                      |
+| + Icon: Sprite                                             |
+| + Level: int                                               |
+| + Health: float                                            |
+| + Attack: float                                            |
+| + Defense: float                                           |
+| + Speed: float                                             |
++------------------------------------------------------------+
+| + CharacterData(id: int, name: string,                     |
+|                 description: string = "",                  |
+|                 icon: Sprite = null)                       |
++------------------------------------------------------------+
+<< Serializable >>
+<< Namespace: WarLeague.Models >>
