@@ -1,0 +1,77 @@
+Namespace: WarLeague.Controllers
+
+Base Class: MonoBehaviour
+
+Amaç: Oyun içi ayarlarý (ses, parlaklýk, zorluk vb.) yönetmek ve kullanýcý tercihlerini PlayerPrefs ile kaydetmek.
+
+Bileþenler:
+
+Slider: Ses ve parlaklýk ayarý
+
+TMP_Text: Deðerleri yazýlý göstermek için
+
+Image: Parlaklýk overlay'i
+
+Toggle: Eðitim ipuçlarý, otomatik kayýt
+
+TMP_Dropdown: Zorluk seviyesi seçimi
+
+Button: Kaydet ve geri dön butonlarý
+
+Fonksiyonlar:
+
+Start(): UI'yý hazýrlar ve ayarlarý yükler
+
+LoadSettings(): PlayerPrefs’ten veri çeker
+
+SetupEventListeners(): Event listener'larý ayarlar
+
+HandleXChanged(): Deðiþiklikleri anlýk olarak kaydeder (ses, parlaklýk, zorluk vb.)
+
+SaveSettings(): PlayerPrefs.Save() çaðrýsý yapar
+
+UpdateUI(): Slider deðerlerini yazýya çevirir
+
+UpdateBrightness(): Parlaklýðý UI'da uygular
+
++-------------------------------------------------------------+
+|                    SettingsController                       |
++-------------------------------------------------------------+
+| // Ses Ayarlarý                                             |
+| - _masterVolumeSlider: Slider                               |
+| - _musicVolumeSlider: Slider                                |
+| - _masterVolumeText: TMP_Text                               |
+| - _musicVolumeText: TMP_Text                                |
+|                                                             |
+| // Görüntü Ayarlarý                                         |
+| - _brightnessSlider: Slider                                 |
+| - _brightnessText: TMP_Text                                 |
+| - _brightnessOverlay: Image                                 |
+|                                                             |
+| // Oyun Ayarlarý                                            |
+| - _tutorialTipsToggle: Toggle                               |
+| - _autoSaveToggle: Toggle                                   |
+| - _difficultyDropdown: TMP_Dropdown                         |
+|                                                             |
+| // UI Kontrolleri                                           |
+| - _saveButton: Button                                       |
+| - _backButton: Button                                       |
++-------------------------------------------------------------+
+| + Start(): void                                             |
+| + InitializeUI(): void                                      |
+| + SetupDifficultyDropdown(): void                           |
+| + LoadSettings(): void                                      |
+| + SetupEventListeners(): void                               |
+| + HandleMasterVolumeChanged(value: float): void             |
+| + HandleMusicVolumeChanged(value: float): void              |
+| + HandleBrightnessChanged(value: float): void               |
+| + HandleTutorialTipsChanged(enabled: bool): void            |
+| + HandleAutoSaveChanged(enabled: bool): void                |
+| + HandleDifficultyChanged(value: int): void                 |
+| + UpdateBrightness(value: float): void                      |
+| + UpdateUI(): void                                          |
+| + SaveSettings(): void                                      |
+| + HandleBack(): void                                        |
++-------------------------------------------------------------+
+<< Inherits: MonoBehaviour >>
+<< Namespace: WarLeague.Controllers >>
