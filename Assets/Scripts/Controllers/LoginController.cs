@@ -125,7 +125,7 @@ namespace WarLeague.Controllers
             Debug.Log("Login button clicked");
             if (ValidateLoginFields())
             {
-                LoadScene(MAIN_MENU_SCENE);
+                SceneController.Instance.LoadMainMenuScene();
             }
             else
             {
@@ -136,7 +136,7 @@ namespace WarLeague.Controllers
         private void HandleRegistration()
         {
             Debug.Log("Register button clicked");
-            LoadScene(REGISTER_SCENE);
+            SceneController.Instance.LoadRegisterScene();
         }
 
         private void HandleForgotPassword()
