@@ -10,12 +10,6 @@ namespace WarLeague.Controllers
     {
         public static SceneController Instance { get; private set; }
 
-        [Header("Scene Names")]
-        [SerializeField] private string _loginScene = "LoginScene";
-        [SerializeField] private string _mainMenuScene = "MainMenuScene";
-        [SerializeField] private string _registerScene = "RegisterScene";
-        [SerializeField] private string _armyBuilderScene = "ArmyBuilder";
-
         [Header("Loading Settings")]
         [SerializeField] private float _minLoadingTime = 1f;
         [SerializeField] private LoadingScreenView loadingScreenView;
