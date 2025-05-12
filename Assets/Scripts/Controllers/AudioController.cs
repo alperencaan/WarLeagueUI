@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using WarLeagueUI.Models;
+using WarLeagueUI.Views;
 
 namespace WarLeague.Controllers
 {
@@ -8,15 +10,15 @@ namespace WarLeague.Controllers
         private static AudioController _instance;
         
         [Header("Ses Ayarları")]
-        [SerializeField] private AudioMixer _audioMixer;
+        [SerializeField] private AudioMixer audioMixer;
+        [SerializeField] private AudioView audioView;
         
         private const string MASTER_VOLUME_KEY = "MasterVolume";
         private const string SFX_VOLUME_KEY = "SFXVolume";
         private const string MASTER_VOLUME_MIXER = "MasterVolume";
         private const string SFX_VOLUME_MIXER = "SFXVolume";
         
-        private float _masterVolume = 1f;
-        private float _sfxVolume = 1f;
+        private AudioModel audioModel;
 
         public static AudioController Instance
         {
@@ -35,13 +37,25 @@ namespace WarLeague.Controllers
             }
         }
 
-        public float MasterVolume => _masterVolume;
-        public float SFXVolume => _sfxVolume;
-
         private void Awake()
         {
             InitializeSingleton();
-            LoadAudioSettings();
+            float master = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, 1f);
+            float sfx = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
+            audioModel = new AudioModel(master, sfx);
+        }
+
+        private void Start()
+        {
+            ApplyVolumesToMixer();
+            if (audioView != null)
+            {
+                audioView.SetMasterVolumeSlider(audioModel.MasterVolume);
+                audioView.SetSFXVolumeSlider(audioModel.SFXVolume);
+                audioView.MasterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
+                audioView.SFXVolumeSlider.onValueChanged.AddListener(SetSFXVolume);
+                audioView.TestSoundButton.onClick.AddListener(PlayTestSound);
+            }
         }
 
         private void InitializeSingleton()
@@ -57,29 +71,28 @@ namespace WarLeague.Controllers
             }
         }
 
-        private void LoadAudioSettings()
-        {
-            _masterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, 1f);
-            _sfxVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
-            
-            SetMasterVolume(_masterVolume);
-            SetSFXVolume(_sfxVolume);
-        }
-
         public void SetMasterVolume(float volume)
         {
-            _masterVolume = Mathf.Clamp01(volume);
-            float dB = ConvertToDecibels(_masterVolume);
-            _audioMixer.SetFloat(MASTER_VOLUME_MIXER, dB);
-            SaveVolumeSettings(MASTER_VOLUME_KEY, _masterVolume);
+            audioModel.SetMasterVolume(volume);
+            float dB = ConvertToDecibels(audioModel.MasterVolume);
+            audioMixer.SetFloat(MASTER_VOLUME_MIXER, dB);
+            PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, audioModel.MasterVolume);
+            PlayerPrefs.Save();
         }
 
         public void SetSFXVolume(float volume)
         {
-            _sfxVolume = Mathf.Clamp01(volume);
-            float dB = ConvertToDecibels(_sfxVolume);
-            _audioMixer.SetFloat(SFX_VOLUME_MIXER, dB);
-            SaveVolumeSettings(SFX_VOLUME_KEY, _sfxVolume);
+            audioModel.SetSFXVolume(volume);
+            float dB = ConvertToDecibels(audioModel.SFXVolume);
+            audioMixer.SetFloat(SFX_VOLUME_MIXER, dB);
+            PlayerPrefs.SetFloat(SFX_VOLUME_KEY, audioModel.SFXVolume);
+            PlayerPrefs.Save();
+        }
+
+        private void ApplyVolumesToMixer()
+        {
+            audioMixer.SetFloat(MASTER_VOLUME_MIXER, ConvertToDecibels(audioModel.MasterVolume));
+            audioMixer.SetFloat(SFX_VOLUME_MIXER, ConvertToDecibels(audioModel.SFXVolume));
         }
 
         private float ConvertToDecibels(float volume)
@@ -87,17 +100,11 @@ namespace WarLeague.Controllers
             return Mathf.Log10(Mathf.Max(0.0001f, volume)) * 20f;
         }
 
-        private void SaveVolumeSettings(string key, float value)
-        {
-            PlayerPrefs.SetFloat(key, value);
-            PlayerPrefs.Save();
-        }
-
         public void PlaySound(AudioClip clip, Vector3 position, float volume = 1f)
         {
             if (clip != null)
             {
-                AudioSource.PlayClipAtPoint(clip, position, volume * _masterVolume);
+                AudioSource.PlayClipAtPoint(clip, position, volume * audioModel.MasterVolume);
             }
         }
 

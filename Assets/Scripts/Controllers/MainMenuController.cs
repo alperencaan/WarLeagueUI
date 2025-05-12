@@ -1,43 +1,30 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using UnityEngine.SceneManagement;
+using WarLeagueUI.Models;
+using WarLeagueUI.Views;
 
 namespace WarLeague.Controllers
 {
     public class MainMenuController : MonoBehaviour
     {
-        [Header("Menu Buttons")]
-        [SerializeField] private Button _startButton;
-        [SerializeField] private Button _armyBuilderButton;
-        [SerializeField] private Button _settingsButton;
-        [SerializeField] private Button _aboutButton;
+        [SerializeField] private MainMenuView mainMenuView;
+        private MainMenuModel mainMenuModel;
 
         private const string GAME_SCENE = "GameScene";
         private const string ARMY_BUILDER_SCENE = "ArmyBuilderScene";
 
-        [Header("UI Panels")]
-        [SerializeField] private GameObject _settingsPanel;
-        [SerializeField] private GameObject _aboutPanel;
+        private void Awake()
+        {
+            mainMenuModel = new MainMenuModel();
+        }
 
         private void Start()
         {
-            InitializeUI();
-            SetupButtonListeners();
-        }
-
-        private void InitializeUI()
-        {
-            if (_settingsPanel != null) _settingsPanel.SetActive(false);
-            if (_aboutPanel != null) _aboutPanel.SetActive(false);
-        }
-
-        private void SetupButtonListeners()
-        {
-            if (_startButton != null) _startButton.onClick.AddListener(HandleStartGame);
-            if (_armyBuilderButton != null) _armyBuilderButton.onClick.AddListener(HandleArmyBuilder);
-            if (_settingsButton != null) _settingsButton.onClick.AddListener(HandleSettings);
-            if (_aboutButton != null) _aboutButton.onClick.AddListener(HandleAbout);
+            mainMenuView.StartButton.onClick.AddListener(HandleStartGame);
+            mainMenuView.ArmyBuilderButton.onClick.AddListener(HandleArmyBuilder);
+            mainMenuView.SettingsButton.onClick.AddListener(HandleSettings);
+            mainMenuView.AboutButton.onClick.AddListener(HandleAbout);
+            mainMenuView.HidePanels();
         }
 
         private void HandleStartGame()
@@ -52,20 +39,14 @@ namespace WarLeague.Controllers
 
         private void HandleSettings()
         {
-            if (_settingsPanel != null)
-            {
-                _settingsPanel.SetActive(true);
-                if (_aboutPanel != null) _aboutPanel.SetActive(false);
-            }
+            mainMenuModel.OpenSettingsPanel();
+            mainMenuView.ShowSettingsPanel();
         }
 
         private void HandleAbout()
         {
-            if (_aboutPanel != null)
-            {
-                _aboutPanel.SetActive(true);
-                if (_settingsPanel != null) _settingsPanel.SetActive(false);
-            }
+            mainMenuModel.OpenAboutPanel();
+            mainMenuView.ShowAboutPanel();
         }
 
         private void LoadScene(string sceneName)
