@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using WarLeagueUI.Models;
+using WarLeagueUI.Views;
 
 namespace WarLeague.Controllers
 {
@@ -16,7 +18,9 @@ namespace WarLeague.Controllers
 
         [Header("Loading Settings")]
         [SerializeField] private float _minLoadingTime = 1f;
-        [SerializeField] private GameObject _loadingScreen;
+        [SerializeField] private LoadingScreenView loadingScreenView;
+
+        private SceneModel sceneModel;
 
         private void Awake()
         {
@@ -29,37 +33,35 @@ namespace WarLeague.Controllers
             {
                 Destroy(gameObject);
             }
+            sceneModel = new SceneModel();
         }
 
         public void LoadLoginScene()
         {
-            StartCoroutine(LoadSceneAsync(_loginScene));
+            StartCoroutine(LoadSceneAsync(sceneModel.LoginScene));
         }
 
         public void LoadMainMenuScene()
         {
-            StartCoroutine(LoadSceneAsync(_mainMenuScene));
+            StartCoroutine(LoadSceneAsync(sceneModel.MainMenuScene));
         }
 
         public void LoadRegisterScene()
         {
-            StartCoroutine(LoadSceneAsync(_registerScene));
+            StartCoroutine(LoadSceneAsync(sceneModel.RegisterScene));
         }
 
         public void LoadArmyBuilderScene()
         {
-            StartCoroutine(LoadSceneAsync(_armyBuilderScene));
+            StartCoroutine(LoadSceneAsync(sceneModel.ArmyBuilderScene));
         }
 
         private IEnumerator LoadSceneAsync(string sceneName)
         {
-            if (_loadingScreen != null)
-            {
-                _loadingScreen.SetActive(true);
-            }
+            sceneModel.SetLoading(true);
+            loadingScreenView?.Show();
 
             float startTime = Time.time;
-
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
             asyncLoad.allowSceneActivation = false;
 
@@ -80,10 +82,8 @@ namespace WarLeague.Controllers
                 yield return null;
             }
 
-            if (_loadingScreen != null)
-            {
-                _loadingScreen.SetActive(false);
-            }
+            sceneModel.SetLoading(false);
+            loadingScreenView?.Hide();
         }
 
         public void QuitGame()
