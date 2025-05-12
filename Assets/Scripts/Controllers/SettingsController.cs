@@ -1,32 +1,13 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System.Collections.Generic;
+using WarLeagueUI.Models;
+using WarLeagueUI.Views;
 
 namespace WarLeague.Controllers
 {
     public class SettingsController : MonoBehaviour
     {
-        [Header("Ses Ayarları")]
-        [SerializeField] private Slider _masterVolumeSlider;
-        [SerializeField] private Slider _musicVolumeSlider;
-        [SerializeField] private TMP_Text _masterVolumeText;
-        [SerializeField] private TMP_Text _musicVolumeText;
-
-        [Header("Görüntü Ayarları")]
-        [SerializeField] private Slider _brightnessSlider;
-        [SerializeField] private TMP_Text _brightnessText;
-        [SerializeField] private Image _brightnessOverlay;
-
-        [Header("Oyun Ayarları")]
-        [SerializeField] private Toggle _tutorialTipsToggle;
-        [SerializeField] private Toggle _autoSaveToggle;
-        [SerializeField] private TMP_Dropdown _difficultyDropdown;
-
-        [Header("UI Kontrolleri")]
-        [SerializeField] private Button _saveButton;
-        [SerializeField] private Button _backButton;
-        [SerializeField] private CanvasGroup _settingsPanel;
+        [SerializeField] private SettingsView settingsView;
+        private SettingsModel settingsModel;
 
         private const string MUSIC_VOLUME_KEY = "MusicVolume";
         private const string BRIGHTNESS_KEY = "Brightness";
@@ -34,157 +15,116 @@ namespace WarLeague.Controllers
         private const string AUTO_SAVE_KEY = "AutoSave";
         private const string DIFFICULTY_KEY = "Difficulty";
 
+        private void Awake()
+        {
+            settingsModel = new SettingsModel();
+        }
+
         private void Start()
         {
-            InitializeUI();
+            SetupDropdown();
             LoadSettings();
             SetupEventListeners();
+            settingsView.HidePanel();
         }
 
-        private void InitializeUI()
+        private void SetupDropdown()
         {
-            SetupDifficultyDropdown();
-            UpdateUI();
-            if (_settingsPanel != null)
+            if (settingsView.DifficultyDropdown != null)
             {
-                _settingsPanel.alpha = 0;
-                _settingsPanel.interactable = false;
-                _settingsPanel.blocksRaycasts = false;
-            }
-        }
-
-        private void SetupDifficultyDropdown()
-        {
-            if (_difficultyDropdown != null)
-            {
-                _difficultyDropdown.ClearOptions();
-                _difficultyDropdown.AddOptions(new List<string> { "Kolay", "Normal", "Zor" });
+                settingsView.DifficultyDropdown.ClearOptions();
+                settingsView.DifficultyDropdown.AddOptions(new System.Collections.Generic.List<string> { "Kolay", "Normal", "Zor" });
             }
         }
 
         private void SetupEventListeners()
         {
-            if (_masterVolumeSlider != null)
-                _masterVolumeSlider.onValueChanged.AddListener(HandleMasterVolumeChange);
-            if (_musicVolumeSlider != null)
-                _musicVolumeSlider.onValueChanged.AddListener(HandleMusicVolumeChange);
-            if (_brightnessSlider != null)
-                _brightnessSlider.onValueChanged.AddListener(HandleBrightnessChange);
-            if (_tutorialTipsToggle != null)
-                _tutorialTipsToggle.onValueChanged.AddListener(HandleTutorialTipsChange);
-            if (_autoSaveToggle != null)
-                _autoSaveToggle.onValueChanged.AddListener(HandleAutoSaveChange);
-            if (_difficultyDropdown != null)
-                _difficultyDropdown.onValueChanged.AddListener(HandleDifficultyChange);
-            if (_saveButton != null)
-                _saveButton.onClick.AddListener(HandleSaveSettings);
-            if (_backButton != null)
-                _backButton.onClick.AddListener(HandleBack);
+            settingsView.MasterVolumeSlider.onValueChanged.AddListener(HandleMasterVolumeChange);
+            settingsView.MusicVolumeSlider.onValueChanged.AddListener(HandleMusicVolumeChange);
+            settingsView.BrightnessSlider.onValueChanged.AddListener(HandleBrightnessChange);
+            settingsView.TutorialTipsToggle.onValueChanged.AddListener(HandleTutorialTipsChange);
+            settingsView.AutoSaveToggle.onValueChanged.AddListener(HandleAutoSaveChange);
+            settingsView.DifficultyDropdown.onValueChanged.AddListener(HandleDifficultyChange);
+            settingsView.SaveButton.onClick.AddListener(HandleSaveSettings);
+            settingsView.BackButton.onClick.AddListener(HandleBack);
         }
 
         private void LoadSettings()
         {
-            if (_masterVolumeSlider != null)
-                _masterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume", 1f);
-            if (_musicVolumeSlider != null)
-                _musicVolumeSlider.value = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 1f);
-            if (_brightnessSlider != null)
-                _brightnessSlider.value = PlayerPrefs.GetFloat(BRIGHTNESS_KEY, 1f);
-            if (_tutorialTipsToggle != null)
-                _tutorialTipsToggle.isOn = PlayerPrefs.GetInt(TUTORIAL_TIPS_KEY, 1) == 1;
-            if (_autoSaveToggle != null)
-                _autoSaveToggle.isOn = PlayerPrefs.GetInt(AUTO_SAVE_KEY, 1) == 1;
-            if (_difficultyDropdown != null)
-                _difficultyDropdown.value = PlayerPrefs.GetInt(DIFFICULTY_KEY, 1);
+            settingsView.MasterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume", 1f);
+            settingsView.MusicVolumeSlider.value = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 1f);
+            settingsView.BrightnessSlider.value = PlayerPrefs.GetFloat(BRIGHTNESS_KEY, 1f);
+            settingsView.TutorialTipsToggle.isOn = PlayerPrefs.GetInt(TUTORIAL_TIPS_KEY, 1) == 1;
+            settingsView.AutoSaveToggle.isOn = PlayerPrefs.GetInt(AUTO_SAVE_KEY, 1) == 1;
+            settingsView.DifficultyDropdown.value = PlayerPrefs.GetInt(DIFFICULTY_KEY, 1);
+            UpdateUI();
         }
 
         private void UpdateUI()
         {
-            UpdateVolumeTexts();
-            UpdateBrightness();
-        }
-
-        private void UpdateVolumeTexts()
-        {
-            if (_masterVolumeText != null)
-                _masterVolumeText.text = $"Ses: {(_masterVolumeSlider.value * 100):F0}%";
-            if (_musicVolumeText != null)
-                _musicVolumeText.text = $"Müzik: {(_musicVolumeSlider.value * 100):F0}%";
-        }
-
-        private void UpdateBrightness()
-        {
-            if (_brightnessText != null)
-                _brightnessText.text = $"Parlaklık: {(_brightnessSlider.value * 100):F0}%";
-            if (_brightnessOverlay != null)
-            {
-                var color = _brightnessOverlay.color;
-                color.a = 1 - _brightnessSlider.value;
-                _brightnessOverlay.color = color;
-            }
+            settingsView.UpdateVolumeTexts(settingsView.MasterVolumeSlider.value, settingsView.MusicVolumeSlider.value);
+            settingsView.UpdateBrightness(settingsView.BrightnessSlider.value);
         }
 
         private void HandleMasterVolumeChange(float value)
         {
+            settingsModel.SetMasterVolume(value);
             AudioController.Instance.SetMasterVolume(value);
-            UpdateVolumeTexts();
+            settingsView.UpdateVolumeTexts(value, settingsView.MusicVolumeSlider.value);
         }
 
         private void HandleMusicVolumeChange(float value)
         {
+            settingsModel.SetMusicVolume(value);
             AudioController.Instance.SetSFXVolume(value);
-            UpdateVolumeTexts();
+            settingsView.UpdateVolumeTexts(settingsView.MasterVolumeSlider.value, value);
         }
 
         private void HandleBrightnessChange(float value)
         {
-            UpdateBrightness();
+            settingsModel.SetBrightness(value);
+            settingsView.UpdateBrightness(value);
         }
 
         private void HandleTutorialTipsChange(bool value)
         {
+            settingsModel.SetTutorialTips(value);
             PlayerPrefs.SetInt(TUTORIAL_TIPS_KEY, value ? 1 : 0);
         }
 
         private void HandleAutoSaveChange(bool value)
         {
+            settingsModel.SetAutoSave(value);
             PlayerPrefs.SetInt(AUTO_SAVE_KEY, value ? 1 : 0);
         }
 
         private void HandleDifficultyChange(int value)
         {
+            settingsModel.SetDifficulty(value);
             PlayerPrefs.SetInt(DIFFICULTY_KEY, value);
         }
 
         private void HandleSaveSettings()
         {
+            PlayerPrefs.SetFloat("MasterVolume", settingsView.MasterVolumeSlider.value);
+            PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, settingsView.MusicVolumeSlider.value);
+            PlayerPrefs.SetFloat(BRIGHTNESS_KEY, settingsView.BrightnessSlider.value);
             PlayerPrefs.Save();
             ShowMessage("Ayarlar kaydedildi!");
         }
 
         private void HandleBack()
         {
-            if (_settingsPanel != null)
-            {
-                _settingsPanel.alpha = 0;
-                _settingsPanel.interactable = false;
-                _settingsPanel.blocksRaycasts = false;
-            }
+            settingsView.HidePanel();
         }
 
         public void ShowSettings()
         {
-            if (_settingsPanel != null)
-            {
-                _settingsPanel.alpha = 1;
-                _settingsPanel.interactable = true;
-                _settingsPanel.blocksRaycasts = true;
-            }
+            settingsView.ShowPanel();
         }
 
         private void ShowMessage(string message)
         {
-            // TODO: Implement message display
             Debug.Log(message);
         }
     }
