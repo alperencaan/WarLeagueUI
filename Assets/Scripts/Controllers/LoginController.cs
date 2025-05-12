@@ -177,7 +177,7 @@ namespace WarLeague.Controllers
 
         public void HandleSettings()
         {
-            var settingsController = FindObjectOfType<SettingsController>();
+            var settingsController = FindFirstObjectByType<SettingsController>();
             if (settingsController != null)
             {
                 settingsController.ShowSettings();

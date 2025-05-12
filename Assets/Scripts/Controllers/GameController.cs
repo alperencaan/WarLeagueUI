@@ -65,12 +65,4 @@ namespace WarLeagueUI.Controllers
             // Oyun sonu mantığı
         }
     }
-
-    public enum GameState
-    {
-        MainMenu,
-        Playing,
-        Paused,
-        GameOver
-    }
 } 
