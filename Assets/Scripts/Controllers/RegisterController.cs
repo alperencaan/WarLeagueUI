@@ -1,108 +1,72 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using UnityEngine.SceneManagement;
+using WarLeagueUI.Models;
+using WarLeagueUI.Views;
 
 namespace WarLeague.Controllers
 {
     public class RegisterController : MonoBehaviour
     {
-        [Header("Giriş Alanları")]
-        [SerializeField] private TMP_InputField _usernameField;
-        [SerializeField] private TMP_InputField _emailField;
-        [SerializeField] private TMP_InputField _passwordField;
-        [SerializeField] private TMP_InputField _confirmPasswordField;
-
-        [Header("Butonlar")]
-        [SerializeField] private Button _registerButton;
-        [SerializeField] private Button _backToLoginButton;
-
-        [Header("UI Elementleri")]
-        [SerializeField] private TextMeshProUGUI _errorText;
+        [SerializeField] private RegisterView registerView;
+        private RegisterModel registerModel;
 
         private const string LOGIN_SCENE = "LoginScene";
-        private const int MIN_USERNAME_LENGTH = 3;
-        private const int MIN_PASSWORD_LENGTH = 6;
+
+        private void Awake()
+        {
+            registerModel = new RegisterModel();
+        }
 
         private void Start()
         {
-            SetupEventListeners();
+            registerView.RegisterButton.onClick.AddListener(HandleRegister);
+            registerView.BackToLoginButton.onClick.AddListener(HandleBackToLogin);
+            registerView.UsernameField.onValueChanged.AddListener(_ => ValidateInputs());
+            registerView.EmailField.onValueChanged.AddListener(_ => ValidateInputs());
+            registerView.PasswordField.onValueChanged.AddListener(_ => ValidateInputs());
+            registerView.ConfirmPasswordField.onValueChanged.AddListener(_ => ValidateInputs());
             SetRegisterButtonState(false);
-        }
-
-        private void SetupEventListeners()
-        {
-            _usernameField.onValueChanged.AddListener(_ => ValidateInputs());
-            _emailField.onValueChanged.AddListener(_ => ValidateInputs());
-            _passwordField.onValueChanged.AddListener(_ => ValidateInputs());
-            _confirmPasswordField.onValueChanged.AddListener(_ => ValidateInputs());
-
-            _registerButton.onClick.AddListener(HandleRegister);
-            _backToLoginButton.onClick.AddListener(HandleBackToLogin);
         }
 
         private void ValidateInputs()
         {
-            bool isValid = !string.IsNullOrEmpty(_usernameField.text) &&
-                         !string.IsNullOrEmpty(_emailField.text) &&
-                         !string.IsNullOrEmpty(_passwordField.text) &&
-                         !string.IsNullOrEmpty(_confirmPasswordField.text) &&
-                         _passwordField.text == _confirmPasswordField.text &&
-                         IsValidEmail(_emailField.text) &&
-                         _usernameField.text.Length >= MIN_USERNAME_LENGTH &&
-                         _passwordField.text.Length >= MIN_PASSWORD_LENGTH;
-
+            registerModel.SetCredentials(
+                registerView.UsernameField.text,
+                registerView.EmailField.text,
+                registerView.PasswordField.text,
+                registerView.ConfirmPasswordField.text
+            );
+            bool isValid = registerModel.IsValid();
             SetRegisterButtonState(isValid);
-            
             if (isValid)
             {
-                HideError();
+                registerView.HideError();
             }
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            return email.Contains("@") && email.Contains(".");
         }
 
         private void SetRegisterButtonState(bool isEnabled)
         {
-            _registerButton.interactable = isEnabled;
-            var colors = _registerButton.colors;
+            registerView.RegisterButton.interactable = isEnabled;
+            var colors = registerView.RegisterButton.colors;
             colors.normalColor = isEnabled ? new Color(1f, 0.65f, 0f) : new Color(0.5f, 0.5f, 0.5f);
-            _registerButton.colors = colors;
+            registerView.RegisterButton.colors = colors;
         }
 
         private void HandleRegister()
         {
-            if (_passwordField.text != _confirmPasswordField.text)
+            registerModel.SetCredentials(
+                registerView.UsernameField.text,
+                registerView.EmailField.text,
+                registerView.PasswordField.text,
+                registerView.ConfirmPasswordField.text
+            );
+            if (!registerModel.IsValid())
             {
-                ShowError("Şifreler eşleşmiyor!");
+                registerView.ShowError(registerModel.GetValidationError());
                 return;
             }
-
-            if (_usernameField.text.Length < MIN_USERNAME_LENGTH)
-            {
-                ShowError($"Kullanıcı adı en az {MIN_USERNAME_LENGTH} karakter olmalıdır!");
-                return;
-            }
-
-            if (_passwordField.text.Length < MIN_PASSWORD_LENGTH)
-            {
-                ShowError($"Şifre en az {MIN_PASSWORD_LENGTH} karakter olmalıdır!");
-                return;
-            }
-
-            if (!IsValidEmail(_emailField.text))
-            {
-                ShowError("Geçerli bir e-posta adresi giriniz!");
-                return;
-            }
-
             // TODO: Gerçek kayıt işlemleri burada yapılacak
-            Debug.Log($"Yeni kullanıcı kaydediliyor: {_usernameField.text}");
-            
-            // Başarılı kayıt sonrası giriş ekranına dön
+            Debug.Log($"Yeni kullanıcı kaydediliyor: {registerModel.Username}");
             LoadLoginScene();
         }
 
@@ -120,24 +84,7 @@ namespace WarLeague.Controllers
             catch (System.Exception e)
             {
                 Debug.LogError($"{LOGIN_SCENE} yüklenirken hata oluştu: {e.Message}");
-                ShowError("Giriş ekranına dönülemedi!");
-            }
-        }
-
-        private void ShowError(string message)
-        {
-            if (_errorText != null)
-            {
-                _errorText.text = message;
-                _errorText.gameObject.SetActive(true);
-            }
-        }
-
-        private void HideError()
-        {
-            if (_errorText != null)
-            {
-                _errorText.gameObject.SetActive(false);
+                registerView.ShowError("Giriş ekranına dönülemedi!");
             }
         }
     }
