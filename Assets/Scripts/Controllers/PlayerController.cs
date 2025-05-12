@@ -7,35 +7,33 @@ namespace WarLeagueUI.Controllers
     public class PlayerController : MonoBehaviour
     {
         private PlayerModel playerModel;
-        private PlayerView playerView;
+        [SerializeField] private PlayerView playerView;
+
+        private void Awake()
+        {
+            playerModel = new PlayerModel();
+        }
 
         private void Start()
         {
-            playerModel = new PlayerModel();
-            playerView = GetComponent<PlayerView>();
-            
-            if (playerView != null)
-            {
-                UpdateView();
-            }
+            UpdateView();
         }
 
         public void UpdatePlayerName(string newName)
         {
-            playerModel.PlayerName = newName;
+            playerModel.SetPlayerName(newName);
             UpdateView();
         }
 
         public void AddExperience(int amount)
         {
-            playerModel.Experience += amount;
-            // Level up logic could be added here
+            playerModel.AddExperience(amount);
             UpdateView();
         }
 
         public void AddGold(int amount)
         {
-            playerModel.Gold += amount;
+            playerModel.AddGold(amount);
             UpdateView();
         }
 
