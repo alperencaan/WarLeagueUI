@@ -95,9 +95,7 @@ namespace WarLeague.Views
         {
             if (_selectButton != null)
             {
-                _selectButton.image.color = selected ? 
-                    new Color(0.8f, 0.4f, 0f, 1f) : 
-                    new Color(0.6f, 0.3f, 0f, 1f);
+                _selectButton.image.color = new Color(1f, 0f, 0f, 1f);
             }
 
             if (_cardBorder != null)
